@@ -264,10 +264,8 @@ public class RoundManager : MonoBehaviour
 
             if (specialMoveSucceeded)
             {
-                Players.SetHealth(20f);
-                Players.SetEnemyHealth(-20f);
                 specialMoveRequested = false;
-                resultToExecute = "Double Win";
+                resultToExecute = playerChoices[index] >= 4 ? "Double Parry Win" : "Parry Win";
             }
 
             switch (resultToExecute)
@@ -293,6 +291,16 @@ public class RoundManager : MonoBehaviour
 
                 case "Win":
                     Players.SetEnemyHealth(-20f);
+                    break;
+                case "Parry Win":
+                    Players.SetHealth(20f);
+                    Players.SetEnemyHealth(-20f);
+                    break;
+                case "Double Parry Win":
+                    Players.SetHealth(40f);
+                    Players.SetEnemyHealth(-40f);
+                    break;
+                case "No effect":
                     break;
             }
 
