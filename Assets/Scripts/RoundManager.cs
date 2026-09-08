@@ -269,25 +269,32 @@ public class RoundManager : MonoBehaviour
                 specialMoveRequested = false;
                 resultToExecute = "Double Win";
             }
-            else if (resultToExecute == "Double Loss")
+
+            switch (resultToExecute)
             {
-                Players.SetHealth(-20f);
-                Players.SetEnemyHealth(20f);
+                case "Double Loss":
+                    Players.SetHealth(-20f);
+                    Players.SetEnemyHealth(20f);
+                    break;
+
+                case "Loss":
+                    Players.SetHealth(-20f);
+                    break;
+
+                case "Double Win":
+                    Players.SetHealth(20f);
+                    Players.SetEnemyHealth(-20f);
+                    break;
+
+                case "High Draw":
+                    Players.SetHealth(20f);
+                    Players.SetEnemyHealth(20f);
+                    break;
+
+                case "Win":
+                    Players.SetEnemyHealth(-20f);
+                    break;
             }
-            else if (resultToExecute == "Loss")
-                Players.SetHealth(-20f);
-            else if (resultToExecute == "Double Win")
-            {
-                Players.SetHealth(20f);
-                Players.SetEnemyHealth(-20f);
-            }
-            else if (resultToExecute == "High Draw")
-            {
-                Players.SetHealth(20f);
-                Players.SetEnemyHealth(20f);
-            }
-            else if (resultToExecute == "Win")
-                Players.SetEnemyHealth(-20f);
 
             actualResults.Add(resultToExecute);
 

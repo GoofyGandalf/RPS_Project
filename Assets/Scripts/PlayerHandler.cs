@@ -10,7 +10,7 @@ public class PlayerHandler : MonoBehaviour
     [SerializeField]
     private HealthBarUI healthBar_Enemy;
 
-    // Initialize both health bars to full value when the scene starts.
+    // Initialize both health bars to "Health" value when the scene starts.
     void Start()
     {
         Health = MaxHealth;
