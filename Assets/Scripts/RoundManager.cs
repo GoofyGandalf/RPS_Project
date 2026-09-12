@@ -24,7 +24,6 @@ public class RoundManager : MonoBehaviour
     private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
 
     private bool isPlayingResults;
-    private bool highChoiceUsedThisExecution;
 
     private void Awake()
     {
@@ -40,14 +39,7 @@ public class RoundManager : MonoBehaviour
             return;
 
         if (selectedPlayerChoice >= 4)
-        {
-            if (highChoiceUsedThisExecution)
-                return;
-
-            highChoiceUsedThisExecution = true;
-
             buttonHandler.SetHighChoiceButtonsInteractable(false);
-        }
 
         ProcessButtonClick(selectedPlayerChoice);
     }
@@ -78,7 +70,6 @@ public class RoundManager : MonoBehaviour
     private IEnumerator ReadResultsAndSetHealth(RoundBatch batch)
     {
         isPlayingResults = true;
-        highChoiceUsedThisExecution = false;
         specialTimingTracker.StartExecution();
 
         buttonHandler.SetSpecialButtonInteractable(false);
