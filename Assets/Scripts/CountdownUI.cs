@@ -14,13 +14,23 @@ public class CountdownUI : MonoBehaviour
     public int SpecialTargetCountdown { get; private set; } = -1;
     public bool IsPlaying { get; private set; }
     // Allows the special move to be checked only during the highlighted countdown window.
-    public bool IsSpecialTimingOpen =>
-        SpecialTargetCountdown >= 0 &&
-        CurrentCountdown == SpecialTargetCountdown &&
-        Time.realtimeSinceStartupAsDouble <= GetSpecialTimingEndTime();
+    public bool IsSpecialTimingOpen
+    {
+        get
+        {
+            if (SpecialTargetCountdown < 0)
+                return false;
+
+            if (CurrentCountdown != SpecialTargetCountdown)
+                return false;
+
+            return Time.realtimeSinceStartupAsDouble <= GetSpecialTimingEndTime();
+        }
+    }
     private double specialTargetTime;
     private double specialTargetDisplayTime;
 
+    // Resets the countdown UI state when the object is created.
     private void Awake()
     {
         Clear();
@@ -70,6 +80,7 @@ public class CountdownUI : MonoBehaviour
         Clear();
     }
 
+    // Clears the countdown display and resets the timing state.
     public void Clear()
     {
         if (IsPlaying)
@@ -87,20 +98,7 @@ public class CountdownUI : MonoBehaviour
         }
     }
 
-    // Returns how early or late the special button was pressed relative to the target moment.
-    public double GetSpecialTimingOffset()
-    {
-        double timingReference = specialTargetDisplayTime > 0d
-            ? specialTargetDisplayTime
-            : specialTargetTime;
-        double timingOffset = Time.realtimeSinceStartupAsDouble - timingReference;
-
-        if (timingOffset > 0d)
-            return timingOffset - SpecialTimingGracePeriod;
-
-        return timingOffset;
-    }
-
+    // Returns the end of the active special timing window.
     private double GetSpecialTimingEndTime()
     {
         if (CurrentCountdown == SpecialTargetCountdown)

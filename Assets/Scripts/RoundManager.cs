@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class RoundManager : MonoBehaviour
 {
@@ -17,61 +15,31 @@ public class RoundManager : MonoBehaviour
     private CountdownUI countdownUI;
 
     [SerializeField]
-    [FormerlySerializedAs("buttons")]
-    private Button[] regularButtons;
-
-    [SerializeField]
-    private Button[] highChoiceButtons;
-
-    [SerializeField]
-    private Button specialButton;
+    private ButtonHandler buttonHandler;
 
     [SerializeField]
     private ChoiceDisplayUI choiceDisplayUI;
 
-    [SerializeField]
-    private int randomNumber;
-
-    [SerializeField]
-    private int clickCount;
-
-    // Stores the current four-click batch until it is processed as a group.
-    [SerializeField]
-    private List<string> resultsThisGroup = new List<string>();
-
-    private readonly List<bool> highEnemyResultsThisGroup = new List<bool>();
-    private readonly List<int> playerChoicesThisGroup = new List<int>();
-    private readonly List<int> enemyChoicesThisGroup = new List<int>();
-    private readonly List<string> specialTimingAttempts = new List<string>();
+    private readonly RoundInputBuffer roundInputBuffer = new RoundInputBuffer();
+    private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
 
     private bool isPlayingResults;
-    private bool specialMoveRequested;
-    private bool specialMoveUsedThisCountdown;
-    private bool highEnemyNumberUsedThisExecution;
     private bool highChoiceUsedThisExecution;
-    private bool currentCountdownIsSpecial;
-    private bool timingAttemptRecorded;
-    private int currentCountdownIndex;
 
+    // Initializes the round state and default button availability.
     private void Awake()
     {
-        // Guard against missing serialized references in the scene setup.
-        if (regularButtons == null)
-            regularButtons = new Button[0];
+        if (buttonHandler != null)
+        {
+            buttonHandler.SetHighChoiceButtonsInteractable(true);
+            buttonHandler.SetSpecialButtonInteractable(false);
+        }
 
-        if (highChoiceButtons == null)
-            highChoiceButtons = new Button[0];
-
-        SetHighChoiceButtonsInteractable(true);
         if (choiceDisplayUI != null)
             choiceDisplayUI.Clear();
-
-        if (specialButton != null)
-            specialButton.interactable = false;
     }
 
-    // Used by the normal buttons that only feed the enemy roll and the result queue.
-    // Player-selected choices are validated and tracked before they are added to the current group.
+    // Validates a player choice and queues it into the current batch.
     public void OnPlayerChoice(int selectedPlayerChoice)
     {
         if (isPlayingResults || selectedPlayerChoice < 1 || selectedPlayerChoice > 6)
@@ -83,147 +51,61 @@ public class RoundManager : MonoBehaviour
                 return;
 
             highChoiceUsedThisExecution = true;
-            SetHighChoiceButtonsInteractable(false);
+
+            if (buttonHandler != null)
+                buttonHandler.SetHighChoiceButtonsInteractable(false);
         }
 
-        ProcessButtonClick(true, selectedPlayerChoice);
+        ProcessButtonClick(selectedPlayerChoice);
     }
 
-    // Every four clicks are batched together and then played back in order.
-    private void ProcessButtonClick(bool isPlayerChoice, int selectedPlayerChoice = 0)
+    // Adds the player choice to the input buffer and starts playback when a full batch is ready.
+    private void ProcessButtonClick(int selectedPlayerChoice)
     {
         if (isPlayingResults)
             return;
 
-        clickCount++;
+        RoundBatch batch = roundInputBuffer.AddChoice(selectedPlayerChoice);
 
-        if (isPlayerChoice && clickCount % 4 == 1)
-            highEnemyNumberUsedThisExecution = false;
-
-        randomNumber = GenerateEnemyNumber(isPlayerChoice);
-
-        bool isHighNumberMatchup = selectedPlayerChoice >= 4 || randomNumber >= 4;
-        highEnemyResultsThisGroup.Add(randomNumber >= 4);
-        playerChoicesThisGroup.Add(selectedPlayerChoice);
-        enemyChoicesThisGroup.Add(randomNumber);
-
-        if (isPlayerChoice && selectedPlayerChoice >= 4 && randomNumber >= 4)
-            resultsThisGroup.Add("High Draw");
-        else if (isPlayerChoice && selectedPlayerChoice == randomNumber)
-            resultsThisGroup.Add("No effect");
-        else if (isPlayerChoice && ChoiceRules.DoesChoiceDefeat(selectedPlayerChoice, randomNumber))
-        {
-            resultsThisGroup.Add(isHighNumberMatchup ? "Double Win" : "Win");
-        }
-        else if (isPlayerChoice && ChoiceRules.DoesChoiceDefeat(randomNumber, selectedPlayerChoice))
-        {
-            resultsThisGroup.Add(isHighNumberMatchup ? "Double Loss" : "Loss");
-        }
-        else if (isPlayerChoice)
-            resultsThisGroup.Add("No effect");
-        else if (randomNumber == 1)
-        {
-            resultsThisGroup.Add("Loss");
-        }
-        else if (randomNumber == 2)
-        {
-            resultsThisGroup.Add("Win");
-        }
-        else
-            resultsThisGroup.Add("No effect");
-
-        if (clickCount % 4 != 0)
+        if (batch == null)
             return;
 
-        SetRegularButtonsInteractable(false);
-        SetHighChoiceButtonsInteractable(false);
+        if (buttonHandler != null)
+        {
+            buttonHandler.SetRegularButtonsInteractable(false);
+            buttonHandler.SetHighChoiceButtonsInteractable(false);
+        }
 
-        StartCoroutine(ReadResultsAndSetHealth(
-            new List<string>(resultsThisGroup),
-            new List<bool>(highEnemyResultsThisGroup),
-            new List<int>(playerChoicesThisGroup),
-            new List<int>(enemyChoicesThisGroup)));
-        resultsThisGroup.Clear();
-        highEnemyResultsThisGroup.Clear();
-        playerChoicesThisGroup.Clear();
-        enemyChoicesThisGroup.Clear();
+        StartCoroutine(ReadResultsAndSetHealth(batch));
     }
 
-    // High-value enemy rolls are limited to one per four-click batch.
-    private int GenerateEnemyNumber(bool useExtendedNumbers)
-    {
-        if (!useExtendedNumbers || highEnemyNumberUsedThisExecution)
-            return Random.Range(1, 4);
-
-        int generatedNumber = Random.Range(1, 7);
-
-        if (generatedNumber >= 4)
-            highEnemyNumberUsedThisExecution = true;
-
-        return generatedNumber;
-    }
-
-    // The special button can only be used once per current countdown and only records a hit when the timing window is open.
+    // Records a special-button attempt and disables it for the current countdown.
     public void OnSpecialButtonClick()
     {
-        if (!isPlayingResults || specialMoveUsedThisCountdown)
-            return;
+        specialTimingTracker.HandleSpecialButtonClick(isPlayingResults, countdownUI);
 
-        specialMoveUsedThisCountdown = true;
-        timingAttemptRecorded = true;
-        SetSpecialButtonInteractable(false);
-
-        if (countdownUI == null || !countdownUI.IsSpecialTimingOpen)
-        {
-            if (currentCountdownIsSpecial && countdownUI != null)
-            {
-                double offset = countdownUI.GetSpecialTimingOffset();
-                string direction = offset < 0d ? "early" : "late";
-                specialTimingAttempts.Add(
-                    $"Countdown {currentCountdownIndex + 1}: {Mathf.Abs((float)offset):0.000} seconds {direction}");
-            }
-            else
-            {
-                specialTimingAttempts.Add($"Countdown {currentCountdownIndex + 1}: not special");
-            }
-
-            return;
-        }
-
-        specialMoveRequested = true;
-        specialTimingAttempts.Add($"Countdown {currentCountdownIndex + 1}: within window");
+        if (buttonHandler != null)
+            buttonHandler.SetSpecialButtonInteractable(false);
     }
 
-    // This coroutine runs the queued results one by one and applies the corresponding health changes.
-    private IEnumerator ReadResultsAndSetHealth(
-        List<string> results,
-        List<bool> highEnemyResults,
-        List<int> playerChoices,
-        List<int> enemyChoices)
+    // Plays out the queued batch one countdown at a time and applies the resulting health changes.
+    private IEnumerator ReadResultsAndSetHealth(RoundBatch batch)
     {
         isPlayingResults = true;
-        specialMoveRequested = false;
-        specialMoveUsedThisCountdown = false;
-        highEnemyNumberUsedThisExecution = false;
         highChoiceUsedThisExecution = false;
-        specialTimingAttempts.Clear();
+        specialTimingTracker.StartExecution();
 
-        SetSpecialButtonInteractable(false);
+        if (buttonHandler != null)
+            buttonHandler.SetSpecialButtonInteractable(false);
 
         if (countdownUI != null)
             countdownUI.Clear();
 
         yield return new WaitForSecondsRealtime(3.42f);
 
-        int specialCountdownIndex = Random.Range(0, results.Count);
-        List<string> actualResults = new List<string>();
+        int specialCountdownIndex = Random.Range(0, batch.PlayerChoices.Count);
 
-        Debug.Log($"Player choices: {FormatChoices(playerChoices)} | " +
-            $"Enemy choices: {FormatChoices(enemyChoices)} | " +
-            $"Results: [{string.Join(", ", results)}] | " +
-            $"Special countdown: {specialCountdownIndex + 1} of {results.Count}");
-
-        for (int index = 0; index < results.Count; index++)
+        for (int index = 0; index < batch.PlayerChoices.Count; index++)
         {
             if (Players.Health <= 0f || Players.Enemy_Health <= 0f)
             {
@@ -236,82 +118,44 @@ public class RoundManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(TimeAfterChoiceDisplayClears);
 
             bool isSpecialCountdown = index == specialCountdownIndex;
-            currentCountdownIndex = index;
-            currentCountdownIsSpecial = isSpecialCountdown;
-            timingAttemptRecorded = false;
-            specialMoveUsedThisCountdown = false;
-            SetSpecialButtonInteractable(true);
+            if (buttonHandler != null)
+                buttonHandler.SetSpecialButtonInteractable(true);
 
             if (countdownUI != null)
                 yield return StartCoroutine(countdownUI.PlayCountdown(isSpecialCountdown));
 
-            SetSpecialButtonInteractable(false);
+            if (buttonHandler != null)
+                buttonHandler.SetSpecialButtonInteractable(false);
 
             if (choiceDisplayUI != null)
                 choiceDisplayUI.DisplayChoices(
-                    playerChoices[index],
-                    enemyChoices[index],
+                    batch.PlayerChoices[index],
+                    batch.EnemyChoices[index],
                     index == specialCountdownIndex);
 
-            if (isSpecialCountdown && !timingAttemptRecorded)
-                specialTimingAttempts.Add($"Countdown {index + 1}: no input");
+            string resultToExecute = RoundResultEvaluator.GetBaseResult(
+                batch.PlayerChoices[index],
+                batch.EnemyChoices[index]);
 
-            string resultToExecute = results[index];
-            bool specialMoveSucceeded = isSpecialCountdown && specialMoveRequested;
+            bool specialMoveSucceeded = isSpecialCountdown && specialTimingTracker.SpecialMoveRequested;
 
             if (isSpecialCountdown && !specialMoveSucceeded)
-                resultToExecute = highEnemyResults[index] ? "Double Loss" : "Loss";
+                resultToExecute = RoundResultEvaluator.GetMissedSpecialResult(batch.EnemyChoices[index]);
 
             if (specialMoveSucceeded)
             {
-                specialMoveRequested = false;
-                resultToExecute = playerChoices[index] >= 4 ? "Double Parry Win" : "Parry Win";
+                specialTimingTracker.ConsumeSpecialMoveRequest();
+                resultToExecute = RoundResultEvaluator.GetSuccessfulParryResult(batch.PlayerChoices[index]);
             }
 
-            switch (resultToExecute)
-            {
-                case "Double Loss":
-                    Players.SetHealth(-20f);
-                    Players.SetEnemyHealth(20f);
-                    break;
-
-                case "Loss":
-                    Players.SetHealth(-20f);
-                    break;
-
-                case "Double Win":
-                    Players.SetHealth(20f);
-                    Players.SetEnemyHealth(-20f);
-                    break;
-
-                case "High Draw":
-                    Players.SetHealth(20f);
-                    Players.SetEnemyHealth(20f);
-                    break;
-
-                case "Win":
-                    Players.SetEnemyHealth(-20f);
-                    break;
-                case "Parry Win":
-                    Players.SetHealth(20f);
-                    Players.SetEnemyHealth(-20f);
-                    break;
-                case "Double Parry Win":
-                    Players.SetHealth(40f);
-                    Players.SetEnemyHealth(-40f);
-                    break;
-                case "No effect":
-                    break;
-            }
-
-            actualResults.Add(resultToExecute);
+            RoundResultEvaluator.ApplyResult(Players, resultToExecute);
 
             if (Players.Health <= 0f || Players.Enemy_Health <= 0f)
             {
                 break;
             }
 
-            if (index < results.Count - 1)
+            if (index < batch.PlayerChoices.Count - 1)
                 yield return new WaitForSecondsRealtime(TimeBetweenCountdowns);
             else
                 yield return new WaitForSecondsRealtime(TimeBetweenCountdowns);
@@ -325,54 +169,13 @@ public class RoundManager : MonoBehaviour
         if (choiceDisplayUI != null)
             choiceDisplayUI.Clear();
 
-        SetSpecialButtonInteractable(false);
-
-        SetRegularButtonsInteractable(true);
-        SetHighChoiceButtonsInteractable(true);
-
-        Debug.Log($"Actual results executed: [{string.Join(", ", actualResults)}]");
-        Debug.Log($"Special timing attempts: [{string.Join(", ", specialTimingAttempts)}]");
-
-    }
-
-    // Centralized button state helper for locking or unlocking the regular inputs.
-    private void SetRegularButtonsInteractable(bool interactable)
-    {
-        foreach (Button currentButton in regularButtons)
+        if (buttonHandler != null)
         {
-            if (currentButton != null && currentButton != specialButton)
-                currentButton.interactable = interactable;
+            buttonHandler.SetSpecialButtonInteractable(false);
+            buttonHandler.SetRegularButtonsInteractable(true);
+            buttonHandler.SetHighChoiceButtonsInteractable(true);
         }
-    }
 
-    // Keeps the special button enabled only during the current countdown window.
-    private void SetSpecialButtonInteractable(bool interactable)
-    {
-        if (specialButton == null)
-            return;
-
-        specialButton.interactable = interactable;
-    }
-
-    // The high-choice buttons are disabled after their first use in the current group.
-    private void SetHighChoiceButtonsInteractable(bool interactable)
-    {
-        foreach (Button currentButton in highChoiceButtons)
-        {
-            if (currentButton != null && currentButton != specialButton)
-                currentButton.interactable = interactable;
-        }
-    }
-
-    // Converts the stored choice integers into readable labels for logging.
-    private string FormatChoices(List<int> choices)
-    {
-        List<string> names = new List<string>();
-
-        foreach (int choice in choices)
-            names.Add(ChoiceDisplayUI.GetChoiceName(choice));
-
-        return $"[{string.Join(", ", names)}]";
     }
 
 }

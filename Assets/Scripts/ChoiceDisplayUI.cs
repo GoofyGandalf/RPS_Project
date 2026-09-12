@@ -9,6 +9,7 @@ public class ChoiceDisplayUI : MonoBehaviour
     [SerializeField]
     private TMP_Text enemyChoiceText;
 
+    // Clears any previous choice display when the UI is initialized.
     private void Awake()
     {
         Clear();
@@ -27,6 +28,7 @@ public class ChoiceDisplayUI : MonoBehaviour
         }
     }
 
+    // Clears the displayed choices and resets the enemy highlight color.
     public void Clear()
     {
         if (playerChoiceText != null)
@@ -39,7 +41,7 @@ public class ChoiceDisplayUI : MonoBehaviour
         }
     }
 
-    // Converts the numeric choice value into the matching display label.
+    // Converts a numeric choice value into the matching display label.
     public static string GetChoiceName(int choice)
     {
         switch (choice)

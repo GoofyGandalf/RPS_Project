@@ -10,7 +10,7 @@ public class PlayerHandler : MonoBehaviour
     [SerializeField]
     private HealthBarUI healthBar_Enemy;
 
-    // Initialize both health bars to "Health" value when the scene starts.
+    // Initializes both health bars and the starting health values when the scene starts.
     void Start()
     {
         Health = MaxHealth;
@@ -22,7 +22,7 @@ public class PlayerHandler : MonoBehaviour
         healthBar_Enemy.SetHealth(Enemy_Health);
     }
 
-    // Update is called once per frame
+    // Allows quick manual health testing during development.
     void Update()
     {
         if(Input.GetKeyDown("d")) {
@@ -43,7 +43,7 @@ public class PlayerHandler : MonoBehaviour
 
     }
 
-    // Apply a change to the player health and clamp it to the valid range.
+    // Applies a health change to the player and clamps the value to the valid range.
     public void SetHealth(float healthChange) {
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
@@ -51,7 +51,7 @@ public class PlayerHandler : MonoBehaviour
         healthBar.SetHealth(Health);
     }
 
-    // Apply a change to the enemy health and clamp it to the valid range.
+    // Applies a health change to the enemy and clamps the value to the valid range.
     public void SetEnemyHealth(float healthChange) {
         Enemy_Health += healthChange;
         Enemy_Health = Mathf.Clamp(Enemy_Health, 0, Enemy_MaxHealth);
