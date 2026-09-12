@@ -30,7 +30,6 @@ public class CountdownUI : MonoBehaviour
     private double specialTargetTime;
     private double specialTargetDisplayTime;
 
-    // Resets the countdown UI state when the object is created.
     private void Awake()
     {
         Clear();
@@ -57,12 +56,9 @@ public class CountdownUI : MonoBehaviour
         {
             CurrentCountdown = countdown;
 
-            if (countdownText != null)
-            {
-                countdownText.text = countdown == 0 ? "Shoot!" : countdown.ToString();
-                countdownText.color = isSpecialCountdown &&
-                    countdown == SpecialTargetCountdown + 1 ? Color.yellow : Color.white;
-            }
+            countdownText.text = countdown == 0 ? "Shoot!" : countdown.ToString();
+            countdownText.color = isSpecialCountdown &&
+                countdown == SpecialTargetCountdown + 1 ? Color.yellow : Color.white;
 
             if (countdown == SpecialTargetCountdown)
             {
@@ -91,14 +87,10 @@ public class CountdownUI : MonoBehaviour
         specialTargetTime = 0d;
         specialTargetDisplayTime = 0d;
 
-        if (countdownText != null)
-        {
-            countdownText.text = string.Empty;
-            countdownText.color = Color.white;
-        }
+        countdownText.text = string.Empty;
+        countdownText.color = Color.white;
     }
 
-    // Returns the end of the active special timing window.
     private double GetSpecialTimingEndTime()
     {
         if (CurrentCountdown == SpecialTargetCountdown)

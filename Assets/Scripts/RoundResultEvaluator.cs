@@ -20,13 +20,11 @@ public static class RoundResultEvaluator
         return "No effect";
     }
 
-    // Determines the result when the special move is missed on a special countdown.
     public static string GetMissedSpecialResult(int enemyChoice)
     {
         return enemyChoice >= 4 ? "Double Loss" : "Loss";
     }
 
-    // Determines the result when the player successfully parries during a special countdown.
     public static string GetSuccessfulParryResult(int playerChoice)
     {
         return playerChoice >= 4 ? "Double Parry Win" : "Parry Win";

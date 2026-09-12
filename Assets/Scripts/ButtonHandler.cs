@@ -15,7 +15,6 @@ public class ButtonHandler : MonoBehaviour
     [SerializeField]
     private Button specialButton;
 
-    // Forwards a UI button click to the round manager.
     public void OnPlayerChoice(int playerChoice)
     {
         if (roundManager == null)
@@ -27,7 +26,6 @@ public class ButtonHandler : MonoBehaviour
         roundManager.OnPlayerChoice(playerChoice);
     }
 
-    // Updates the regular choice buttons enabled state.
     public void SetRegularButtonsInteractable(bool interactable)
     {
         if (regularButtons == null)
@@ -40,7 +38,6 @@ public class ButtonHandler : MonoBehaviour
         }
     }
 
-    // Updates the special/parry button enabled state.
     public void SetSpecialButtonInteractable(bool interactable)
     {
         if (specialButton == null)
@@ -49,7 +46,6 @@ public class ButtonHandler : MonoBehaviour
         specialButton.interactable = interactable;
     }
 
-    // Updates the high-choice buttons enabled state.
     public void SetHighChoiceButtonsInteractable(bool interactable)
     {
         if (highChoiceButtons == null)

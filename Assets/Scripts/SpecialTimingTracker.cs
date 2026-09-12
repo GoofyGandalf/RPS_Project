@@ -5,7 +5,6 @@ public class SpecialTimingTracker
 
     public bool SpecialMoveRequested => specialMoveRequested;
 
-    // Resets the special-move state for a new round playback.
     public void StartExecution()
     {
         specialMoveRequested = false;

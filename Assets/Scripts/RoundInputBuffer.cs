@@ -42,7 +42,6 @@ public class RoundInputBuffer
         return batch;
     }
 
-    // Clears the buffered choices for the next four-click group.
     public void Clear()
     {
         playerChoicesThisGroup.Clear();

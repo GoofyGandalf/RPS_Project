@@ -26,17 +26,11 @@ public class RoundManager : MonoBehaviour
     private bool isPlayingResults;
     private bool highChoiceUsedThisExecution;
 
-    // Initializes the round state and default button availability.
     private void Awake()
     {
-        if (buttonHandler != null)
-        {
-            buttonHandler.SetHighChoiceButtonsInteractable(true);
-            buttonHandler.SetSpecialButtonInteractable(false);
-        }
-
-        if (choiceDisplayUI != null)
-            choiceDisplayUI.Clear();
+        buttonHandler.SetHighChoiceButtonsInteractable(true);
+        buttonHandler.SetSpecialButtonInteractable(false);
+        choiceDisplayUI.Clear();
     }
 
     // Validates a player choice and queues it into the current batch.
@@ -52,14 +46,12 @@ public class RoundManager : MonoBehaviour
 
             highChoiceUsedThisExecution = true;
 
-            if (buttonHandler != null)
-                buttonHandler.SetHighChoiceButtonsInteractable(false);
+            buttonHandler.SetHighChoiceButtonsInteractable(false);
         }
 
         ProcessButtonClick(selectedPlayerChoice);
     }
 
-    // Adds the player choice to the input buffer and starts playback when a full batch is ready.
     private void ProcessButtonClick(int selectedPlayerChoice)
     {
         if (isPlayingResults)
@@ -70,22 +62,16 @@ public class RoundManager : MonoBehaviour
         if (batch == null)
             return;
 
-        if (buttonHandler != null)
-        {
-            buttonHandler.SetRegularButtonsInteractable(false);
-            buttonHandler.SetHighChoiceButtonsInteractable(false);
-        }
+        buttonHandler.SetRegularButtonsInteractable(false);
+        buttonHandler.SetHighChoiceButtonsInteractable(false);
 
         StartCoroutine(ReadResultsAndSetHealth(batch));
     }
 
-    // Records a special-button attempt and disables it for the current countdown.
     public void OnSpecialButtonClick()
     {
         specialTimingTracker.HandleSpecialButtonClick(isPlayingResults, countdownUI);
-
-        if (buttonHandler != null)
-            buttonHandler.SetSpecialButtonInteractable(false);
+        buttonHandler.SetSpecialButtonInteractable(false);
     }
 
     // Plays out the queued batch one countdown at a time and applies the resulting health changes.
@@ -95,11 +81,8 @@ public class RoundManager : MonoBehaviour
         highChoiceUsedThisExecution = false;
         specialTimingTracker.StartExecution();
 
-        if (buttonHandler != null)
-            buttonHandler.SetSpecialButtonInteractable(false);
-
-        if (countdownUI != null)
-            countdownUI.Clear();
+        buttonHandler.SetSpecialButtonInteractable(false);
+        countdownUI.Clear();
 
         yield return new WaitForSecondsRealtime(3.42f);
 
@@ -112,26 +95,20 @@ public class RoundManager : MonoBehaviour
                 break;
             }
 
-            if (choiceDisplayUI != null)
-                choiceDisplayUI.Clear();
+            choiceDisplayUI.Clear();
 
             yield return new WaitForSecondsRealtime(TimeAfterChoiceDisplayClears);
 
             bool isSpecialCountdown = index == specialCountdownIndex;
-            if (buttonHandler != null)
-                buttonHandler.SetSpecialButtonInteractable(true);
+            buttonHandler.SetSpecialButtonInteractable(true);
+            yield return StartCoroutine(countdownUI.PlayCountdown(isSpecialCountdown));
 
-            if (countdownUI != null)
-                yield return StartCoroutine(countdownUI.PlayCountdown(isSpecialCountdown));
+            buttonHandler.SetSpecialButtonInteractable(false);
 
-            if (buttonHandler != null)
-                buttonHandler.SetSpecialButtonInteractable(false);
-
-            if (choiceDisplayUI != null)
-                choiceDisplayUI.DisplayChoices(
-                    batch.PlayerChoices[index],
-                    batch.EnemyChoices[index],
-                    index == specialCountdownIndex);
+            choiceDisplayUI.DisplayChoices(
+                batch.PlayerChoices[index],
+                batch.EnemyChoices[index],
+                index == specialCountdownIndex);
 
             string resultToExecute = RoundResultEvaluator.GetBaseResult(
                 batch.PlayerChoices[index],
@@ -163,18 +140,12 @@ public class RoundManager : MonoBehaviour
 
         isPlayingResults = false;
 
-        if (countdownUI != null)
-            countdownUI.Clear();
+        countdownUI.Clear();
+        choiceDisplayUI.Clear();
 
-        if (choiceDisplayUI != null)
-            choiceDisplayUI.Clear();
-
-        if (buttonHandler != null)
-        {
-            buttonHandler.SetSpecialButtonInteractable(false);
-            buttonHandler.SetRegularButtonsInteractable(true);
-            buttonHandler.SetHighChoiceButtonsInteractable(true);
-        }
+        buttonHandler.SetSpecialButtonInteractable(false);
+        buttonHandler.SetRegularButtonsInteractable(true);
+        buttonHandler.SetHighChoiceButtonsInteractable(true);
 
     }
 

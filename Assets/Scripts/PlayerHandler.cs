@@ -10,7 +10,6 @@ public class PlayerHandler : MonoBehaviour
     [SerializeField]
     private HealthBarUI healthBar_Enemy;
 
-    // Initializes both health bars and the starting health values when the scene starts.
     void Start()
     {
         Health = MaxHealth;
@@ -43,7 +42,6 @@ public class PlayerHandler : MonoBehaviour
 
     }
 
-    // Applies a health change to the player and clamps the value to the valid range.
     public void SetHealth(float healthChange) {
         Health += healthChange;
         Health = Mathf.Clamp(Health, 0, MaxHealth);
@@ -51,7 +49,6 @@ public class PlayerHandler : MonoBehaviour
         healthBar.SetHealth(Health);
     }
 
-    // Applies a health change to the enemy and clamps the value to the valid range.
     public void SetEnemyHealth(float healthChange) {
         Enemy_Health += healthChange;
         Enemy_Health = Mathf.Clamp(Enemy_Health, 0, Enemy_MaxHealth);

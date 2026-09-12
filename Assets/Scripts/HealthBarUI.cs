@@ -15,13 +15,11 @@ public class HealthBarUI : MonoBehaviour
     [SerializeField]
     private TMP_Text healthText;
 
-    // Stores the maximum health value and refreshes the displayed text.
     public void SetMaxHealth(float maxHealth){
         MaxHealth = maxHealth;
         UpdateHealthText();
     }
 
-    // Resizes the fill bar and refreshes the text for the current health value.
     public void SetHealth(float health) {
         Health = health;
         float newWidth = (Health / MaxHealth) * Width;
@@ -30,10 +28,8 @@ public class HealthBarUI : MonoBehaviour
         UpdateHealthText();
     }
 
-    // Formats and updates the on-screen health text.
     private void UpdateHealthText()
     {
-        if (healthText != null)
-            healthText.text = $"{Health / HealthDisplayDivisor:0}/{MaxHealth / HealthDisplayDivisor:0}";
+        healthText.text = $"{Health / HealthDisplayDivisor:0}/{MaxHealth / HealthDisplayDivisor:0}";
     }
 }
