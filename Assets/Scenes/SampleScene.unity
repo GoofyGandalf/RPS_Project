@@ -1208,6 +1208,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   roundManager: {fileID: 801431795}
+  regularButtons:
+  - {fileID: 2027141039}
+  - {fileID: 858634921}
+  - {fileID: 1244136378}
+  highChoiceButtons:
+  - {fileID: 829187402}
+  - {fileID: 186120587}
+  - {fileID: 1726411339}
+  specialButton: {fileID: 998183028}
 --- !u!114 &801431794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1240,19 +1249,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoundManager
   Players: {fileID: 801431794}
   countdownUI: {fileID: 1656938810}
-  regularButtons:
-  - {fileID: 858634921}
-  - {fileID: 2027141039}
-  - {fileID: 1244136378}
-  highChoiceButtons:
-  - {fileID: 1726411339}
-  - {fileID: 829187402}
-  - {fileID: 186120587}
-  specialButton: {fileID: 998183028}
+  buttonHandler: {fileID: 801431793}
   choiceDisplayUI: {fileID: 801431796}
-  randomNumber: 0
-  clickCount: 0
-  resultsThisGroup: []
 --- !u!114 &801431796
 MonoBehaviour:
   m_ObjectHideFlags: 0

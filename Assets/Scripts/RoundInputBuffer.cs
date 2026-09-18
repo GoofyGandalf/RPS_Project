@@ -29,10 +29,10 @@ public class RoundInputBuffer
         if (clickCount % 4 == 1)
             highEnemyNumberUsedThisExecution = false;
 
-        int randomNumber = GenerateEnemyNumber();
+        int enemyChoice = GenerateEnemyNumber();
 
         playerChoicesThisGroup.Add(selectedPlayerChoice);
-        enemyChoicesThisGroup.Add(randomNumber);
+        enemyChoicesThisGroup.Add(enemyChoice);
 
         if (clickCount % 4 != 0)
             return null;
