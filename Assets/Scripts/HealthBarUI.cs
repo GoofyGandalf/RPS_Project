@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class HealthBarUI : MonoBehaviour
 {
     // Keeps the TMP display formatted as current/max pairs.
-    private const float HealthDisplayDivisor = 20f;
+    private const float HealthDisplayDivisor = 10f;
 
     public float Health, MaxHealth, Width, Height;
 

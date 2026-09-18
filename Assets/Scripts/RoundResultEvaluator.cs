@@ -36,36 +36,36 @@ public static class RoundResultEvaluator
         switch (result)
         {
             case "Double Loss":
-                playerHandler.SetHealth(-20f);
-                playerHandler.SetEnemyHealth(20f);
+                playerHandler.SetHealth(-10f);
+                playerHandler.SetEnemyHealth(10f);
                 break;
 
             case "Loss":
-                playerHandler.SetHealth(-20f);
+                playerHandler.SetHealth(-10f);
                 break;
 
             case "Double Win":
-                playerHandler.SetHealth(20f);
-                playerHandler.SetEnemyHealth(-20f);
+                playerHandler.SetHealth(10f);
+                playerHandler.SetEnemyHealth(-10f);
                 break;
 
             case "High Draw":
-                playerHandler.SetHealth(20f);
-                playerHandler.SetEnemyHealth(20f);
+                playerHandler.SetHealth(10f);
+                playerHandler.SetEnemyHealth(10f);
                 break;
 
             case "Win":
-                playerHandler.SetEnemyHealth(-20f);
+                playerHandler.SetEnemyHealth(-10f);
                 break;
 
             case "Parry Win":
-                playerHandler.SetHealth(20f);
-                playerHandler.SetEnemyHealth(-20f);
+                playerHandler.SetHealth(10f);
+                playerHandler.SetEnemyHealth(-10f);
                 break;
 
             case "Double Parry Win":
-                playerHandler.SetHealth(40f);
-                playerHandler.SetEnemyHealth(-40f);
+                playerHandler.SetHealth(20f);
+                playerHandler.SetEnemyHealth(-20f);
                 break;
 
             case "No effect":

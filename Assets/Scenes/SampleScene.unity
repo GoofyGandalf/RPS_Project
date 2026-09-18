@@ -485,6 +485,51 @@ MonoBehaviour:
   Height: 100
   healthBar: {fileID: 1952294484}
   healthText: {fileID: 540948810}
+--- !u!1 &320350797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 320350799}
+  - component: {fileID: 320350798}
+  m_Layer: 0
+  m_Name: TestEnemy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &320350798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320350797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9a4d352e0efdc74e93f9d1aef061984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  enemyData: {fileID: 11400000, guid: d7a9dfa87067e904c8ae79d755f987ec, type: 2}
+--- !u!4 &320350799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320350797}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.0061, y: 0.09715, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &326473188
 GameObject:
   m_ObjectHideFlags: 0
@@ -1251,6 +1296,7 @@ MonoBehaviour:
   countdownUI: {fileID: 1656938810}
   buttonHandler: {fileID: 801431793}
   choiceDisplayUI: {fileID: 801431796}
+  enemyAI: {fileID: 320350798}
 --- !u!114 &801431796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3830,3 +3876,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1513091075}
   - {fileID: 989454211}
+  - {fileID: 320350799}

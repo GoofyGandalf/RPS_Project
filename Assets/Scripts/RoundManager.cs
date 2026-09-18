@@ -20,13 +20,18 @@ public class RoundManager : MonoBehaviour
     [SerializeField]
     private ChoiceDisplayUI choiceDisplayUI;
 
-    private readonly RoundInputBuffer roundInputBuffer = new RoundInputBuffer();
+    [SerializeField]
+    private EnemyAI enemyAI;
+
+    private RoundInputBuffer roundInputBuffer;
     private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
 
     private bool isPlayingResults;
 
     private void Awake()
     {
+        roundInputBuffer = new RoundInputBuffer(enemyAI);
+
         buttonHandler.SetHighChoiceButtonsInteractable(true);
         buttonHandler.SetSpecialButtonInteractable(false);
         choiceDisplayUI.Clear();

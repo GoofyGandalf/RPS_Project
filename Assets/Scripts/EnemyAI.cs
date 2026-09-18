@@ -26,27 +26,45 @@ public class EnemyData : ScriptableObject
     public IReadOnlyList<int> MoveFourChoices => moveFourChoices;
 }
 
-public class EnemyAI
+public class EnemyAI : MonoBehaviour
 {
-    private readonly EnemyData enemyData;
+    [SerializeField]
+    private EnemyData enemyData;
 
-    public EnemyAI(EnemyData enemyData)
-    {
-        this.enemyData = enemyData;
-    }
+    public EnemyData Data => enemyData;
 
     public List<int> GenerateChoices()
     {
+        //the previous list stays in memory right now, maybe use that to recap last turn?
         List<int> choices = new List<int>(4);
-        choices.Add(GetRandomChoice(enemyData.MoveOneChoices));
-        choices.Add(GetRandomChoice(enemyData.MoveTwoChoices));
-        choices.Add(GetRandomChoice(enemyData.MoveThreeChoices));
-        choices.Add(GetRandomChoice(enemyData.MoveFourChoices));
+        bool highChoiceUsed = false;
+
+        choices.Add(GetRandomChoice(enemyData.MoveOneChoices, ref highChoiceUsed));
+        choices.Add(GetRandomChoice(enemyData.MoveTwoChoices, ref highChoiceUsed));
+        choices.Add(GetRandomChoice(enemyData.MoveThreeChoices, ref highChoiceUsed));
+        choices.Add(GetRandomChoice(enemyData.MoveFourChoices, ref highChoiceUsed));
         return choices;
     }
 
-    private int GetRandomChoice(IReadOnlyList<int> availableChoices)
+    private int GetRandomChoice(IReadOnlyList<int> availableChoices, ref bool highChoiceUsed)
     {
-        return availableChoices[Random.Range(0, availableChoices.Count)];
+        List<int> validChoices = new List<int>();
+
+        for (int index = 0; index < availableChoices.Count; index++)
+        {
+            int choice = availableChoices[index];
+
+            if (!highChoiceUsed || choice < 4)
+                validChoices.Add(choice);
+        }
+
+        int selectedChoice = validChoices.Count > 0
+            ? validChoices[Random.Range(0, validChoices.Count)]
+            : Random.Range(1, 4);
+
+        if (selectedChoice >= 4)
+            highChoiceUsed = true;
+
+        return selectedChoice;
     }
 }
