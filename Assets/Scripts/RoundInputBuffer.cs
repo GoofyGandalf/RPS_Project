@@ -16,11 +16,16 @@ public class RoundBatch
 public class RoundInputBuffer
 {
     private readonly List<int> playerChoicesThisGroup = new List<int>();
-    private readonly EnemyAI enemyAI;
+    private EnemyAI enemyAI;
 
     private int clickCount;
 
     public RoundInputBuffer(EnemyAI enemyAI)
+    {
+        this.enemyAI = enemyAI;
+    }
+
+    public void SetEnemyAI(EnemyAI enemyAI)
     {
         this.enemyAI = enemyAI;
     }

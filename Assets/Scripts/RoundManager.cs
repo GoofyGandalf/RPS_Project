@@ -21,7 +21,7 @@ public class RoundManager : MonoBehaviour
     private ChoiceDisplayUI choiceDisplayUI;
 
     [SerializeField]
-    private EnemyAI enemyAI;
+    private EnemyProgressionManager enemyProgressionManager;
 
     private RoundInputBuffer roundInputBuffer;
     private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
@@ -30,7 +30,7 @@ public class RoundManager : MonoBehaviour
 
     private void Awake()
     {
-        roundInputBuffer = new RoundInputBuffer(enemyAI);
+        roundInputBuffer = new RoundInputBuffer(enemyProgressionManager.CurrentEnemy);
 
         buttonHandler.SetHighChoiceButtonsInteractable(true);
         buttonHandler.SetSpecialButtonInteractable(false);
@@ -54,6 +54,7 @@ public class RoundManager : MonoBehaviour
         if (isPlayingResults)
             return;
 
+        roundInputBuffer.SetEnemyAI(enemyProgressionManager.CurrentEnemy);
         RoundBatch batch = roundInputBuffer.AddChoice(selectedPlayerChoice);
 
         if (batch == null)
@@ -82,7 +83,8 @@ public class RoundManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(3.42f);
 
-        int specialCountdownIndex = Random.Range(0, batch.PlayerChoices.Count);
+        int specialCountdownIndex = enemyProgressionManager.CurrentEnemy
+            .GenerateSpecialCountdownIndex();
 
         for (int index = 0; index < batch.PlayerChoices.Count; index++)
         {
@@ -134,6 +136,8 @@ public class RoundManager : MonoBehaviour
                 yield return new WaitForSecondsRealtime(TimeBetweenCountdowns);
         }
 
+        HandleEnemyDefeat();
+
         isPlayingResults = false;
 
         countdownUI.Clear();
@@ -143,6 +147,16 @@ public class RoundManager : MonoBehaviour
         buttonHandler.SetRegularButtonsInteractable(true);
         buttonHandler.SetHighChoiceButtonsInteractable(true);
 
+    }
+
+    private void HandleEnemyDefeat()
+    {
+        if (Players.Enemy_Health > 0f)
+            return;
+
+        enemyProgressionManager.ChallengeNextEnemy();
+        Players.SetEnemyHealth(100f);
+        Players.SetHealth(100f);
     }
 
 }

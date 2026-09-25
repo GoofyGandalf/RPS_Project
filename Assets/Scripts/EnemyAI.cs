@@ -19,11 +19,27 @@ public class EnemyData : ScriptableObject
     [SerializeField]
     private List<int> moveFourChoices = new List<int> { 1, 2, 3, 4, 5, 6 };
 
+    [SerializeField, Range(0f, 100f)]
+    private float moveOneSpecialLikelihood;
+
+    [SerializeField, Range(0f, 100f)]
+    private float moveTwoSpecialLikelihood;
+
+    [SerializeField, Range(0f, 100f)]
+    private float moveThreeSpecialLikelihood;
+
+    [SerializeField, Range(0f, 100f)]
+    private float moveFourSpecialLikelihood;
+
     public string EnemyName => enemyName;
     public IReadOnlyList<int> MoveOneChoices => moveOneChoices;
     public IReadOnlyList<int> MoveTwoChoices => moveTwoChoices;
     public IReadOnlyList<int> MoveThreeChoices => moveThreeChoices;
     public IReadOnlyList<int> MoveFourChoices => moveFourChoices;
+    public float MoveOneSpecialLikelihood => moveOneSpecialLikelihood;
+    public float MoveTwoSpecialLikelihood => moveTwoSpecialLikelihood;
+    public float MoveThreeSpecialLikelihood => moveThreeSpecialLikelihood;
+    public float MoveFourSpecialLikelihood => moveFourSpecialLikelihood;
 }
 
 public class EnemyAI : MonoBehaviour
@@ -44,6 +60,32 @@ public class EnemyAI : MonoBehaviour
         choices.Add(GetRandomChoice(enemyData.MoveThreeChoices, ref highChoiceUsed));
         choices.Add(GetRandomChoice(enemyData.MoveFourChoices, ref highChoiceUsed));
         return choices;
+    }
+
+    public int GenerateSpecialCountdownIndex()
+    {
+        if (enemyData == null)
+            return -1;
+
+        float[] likelihoods =
+        {
+            enemyData.MoveOneSpecialLikelihood,
+            enemyData.MoveTwoSpecialLikelihood,
+            enemyData.MoveThreeSpecialLikelihood,
+            enemyData.MoveFourSpecialLikelihood
+        };
+
+        float roll = Random.Range(0f, 100f);
+
+        for (int index = 0; index < likelihoods.Length; index++)
+        {
+            roll -= Mathf.Max(0f, likelihoods[index]);
+
+            if (roll < 0f)
+                return index;
+        }
+
+        return likelihoods.Length;
     }
 
     private int GetRandomChoice(IReadOnlyList<int> availableChoices, ref bool highChoiceUsed)
