@@ -60,6 +60,8 @@ public class RoundManager : MonoBehaviour
         if (batch == null)
             return;
 
+        
+
         buttonHandler.SetRegularButtonsInteractable(false);
         buttonHandler.SetHighChoiceButtonsInteractable(false);
 
@@ -135,6 +137,11 @@ public class RoundManager : MonoBehaviour
             else
                 yield return new WaitForSecondsRealtime(TimeBetweenCountdowns);
         }
+        
+        choiceDisplayUI.DisplayLingeringChoices(
+            batch.PlayerChoices,
+            batch.EnemyChoices,
+            specialCountdownIndex);
 
         HandleEnemyDefeat();
 

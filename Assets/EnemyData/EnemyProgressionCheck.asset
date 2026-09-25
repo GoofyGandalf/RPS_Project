@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: EnemyProgressionCheck
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Enemy
-  moveOneChoices: 010000000200000003000000040000000500000006000000i
-  moveTwoChoices: 010000000200000003000000040000000500000006000000i
-  moveThreeChoices: 010000000200000003000000040000000500000006000000i
-  moveFourChoices: 010000000200000003000000040000000500000006000000i
+  moveOneChoices: 01000000i
+  moveTwoChoices: 04000000i
+  moveThreeChoices: 04000000i
+  moveFourChoices: 04000000i
+  moveOneSpecialLikelihood: 0
+  moveTwoSpecialLikelihood: 100
+  moveThreeSpecialLikelihood: 0
+  moveFourSpecialLikelihood: 0

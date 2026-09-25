@@ -17,3 +17,7 @@ MonoBehaviour:
   moveTwoChoices: 010000000200000003000000i
   moveThreeChoices: 0400000004000000040000000100000001000000i
   moveFourChoices: 0100000003000000i
+  moveOneSpecialLikelihood: 5
+  moveTwoSpecialLikelihood: 20
+  moveThreeSpecialLikelihood: 25
+  moveFourSpecialLikelihood: 50
