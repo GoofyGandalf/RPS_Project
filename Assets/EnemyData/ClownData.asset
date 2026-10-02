@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: EnemyProgressionCheck
+  m_Name: ClownData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Enemy
-  moveOneChoices: 01000000i
-  moveTwoChoices: 04000000i
-  moveThreeChoices: 04000000i
-  moveFourChoices: 04000000i
-  moveOneSpecialLikelihood: 0
-  moveTwoSpecialLikelihood: 100
+  enemyName: Clown
+  moveOneChoices: 01000000020000000200000003000000030000000300000006000000i
+  moveTwoChoices: 03000000i
+  moveThreeChoices: 01000000020000000300000006000000060000000600000006000000i
+  moveFourChoices: 010000000200000003000000i
+  moveOneSpecialLikelihood: 20
+  moveTwoSpecialLikelihood: 35
   moveThreeSpecialLikelihood: 0
-  moveFourSpecialLikelihood: 0
+  moveFourSpecialLikelihood: 20

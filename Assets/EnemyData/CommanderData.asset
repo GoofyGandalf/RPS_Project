@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: EnemyDataTest
+  m_Name: CommanderData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Enemy
+  enemyName: Commander
   moveOneChoices: 01000000020000000300000001000000020000000300000004000000i
   moveTwoChoices: 010000000200000003000000i
-  moveThreeChoices: 0400000004000000040000000100000001000000i
+  moveThreeChoices: 040000000400000004000000040000000400000004000000010000000100000002000000i
   moveFourChoices: 0100000003000000i
-  moveOneSpecialLikelihood: 5
+  moveOneSpecialLikelihood: 20
   moveTwoSpecialLikelihood: 20
-  moveThreeSpecialLikelihood: 25
-  moveFourSpecialLikelihood: 50
+  moveThreeSpecialLikelihood: 30
+  moveFourSpecialLikelihood: 30
