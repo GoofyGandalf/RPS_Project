@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class ButtonHandler : MonoBehaviour
 {
+    private static readonly int[] HighChoiceUnlockEnemyIndexes = { 2, 4, 3 };
+
     [SerializeField]
     private RoundManager roundManager;
 
@@ -14,6 +16,9 @@ public class ButtonHandler : MonoBehaviour
 
     [SerializeField]
     private Button specialButton;
+
+    private bool highChoiceButtonsAllowed;
+    private int currentEnemyIndex;
 
     public void OnPlayerChoice(int playerChoice)
     {
@@ -46,15 +51,25 @@ public class ButtonHandler : MonoBehaviour
         specialButton.interactable = interactable;
     }
 
-    public void SetHighChoiceButtonsInteractable(bool interactable)
+    public void SetHighChoiceButtonsInteractable(bool interactable, int enemyIndex)
     {
         if (highChoiceButtons == null)
             return;
 
-        foreach (Button currentButton in highChoiceButtons)
+        highChoiceButtonsAllowed = interactable;
+        currentEnemyIndex = enemyIndex;
+
+        for (int index = 0; index < highChoiceButtons.Length; index++)
         {
-            if (currentButton != null && currentButton != specialButton)
-                currentButton.interactable = interactable;
+            Button currentButton = highChoiceButtons[index];
+            if (currentButton == null || currentButton == specialButton)
+                continue;
+
+            int unlockIndex = index < HighChoiceUnlockEnemyIndexes.Length
+                ? HighChoiceUnlockEnemyIndexes[index]
+                : int.MaxValue;
+
+            currentButton.interactable = highChoiceButtonsAllowed && currentEnemyIndex >= unlockIndex;
         }
     }
 }

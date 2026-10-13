@@ -5,7 +5,7 @@ using UnityEngine;
 public class CountdownUI : MonoBehaviour
 {
     private const double CountdownInterval = 0.4275d;
-    private const double SpecialTimingGracePeriod = 0.2d;
+    private const double SpecialTimingGracePeriod = 0.15d;
 
     [SerializeField]
     private TMP_Text countdownText;

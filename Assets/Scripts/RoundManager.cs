@@ -32,7 +32,7 @@ public class RoundManager : MonoBehaviour
     {
         roundInputBuffer = new RoundInputBuffer(enemyProgressionManager.CurrentEnemy);
 
-        buttonHandler.SetHighChoiceButtonsInteractable(true);
+        SetHighChoiceButtonsInteractable(true);
         buttonHandler.SetSpecialButtonInteractable(false);
         choiceDisplayUI.Clear();
     }
@@ -44,7 +44,7 @@ public class RoundManager : MonoBehaviour
             return;
 
         if (selectedPlayerChoice >= 4)
-            buttonHandler.SetHighChoiceButtonsInteractable(false);
+            SetHighChoiceButtonsInteractable(false);
 
         ProcessButtonClick(selectedPlayerChoice);
     }
@@ -63,7 +63,7 @@ public class RoundManager : MonoBehaviour
         
 
         buttonHandler.SetRegularButtonsInteractable(false);
-        buttonHandler.SetHighChoiceButtonsInteractable(false);
+        SetHighChoiceButtonsInteractable(false);
 
         StartCoroutine(ReadResultsAndSetHealth(batch));
     }
@@ -152,8 +152,15 @@ public class RoundManager : MonoBehaviour
 
         buttonHandler.SetSpecialButtonInteractable(false);
         buttonHandler.SetRegularButtonsInteractable(true);
-        buttonHandler.SetHighChoiceButtonsInteractable(true);
+        SetHighChoiceButtonsInteractable(true);
 
+    }
+
+    private void SetHighChoiceButtonsInteractable(bool interactable)
+    {
+        buttonHandler.SetHighChoiceButtonsInteractable(
+            interactable,
+            enemyProgressionManager.CurrentEnemyIndex);
     }
 
     private void HandleEnemyDefeat()

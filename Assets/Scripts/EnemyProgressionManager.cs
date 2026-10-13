@@ -9,6 +9,7 @@ public class EnemyProgressionManager : MonoBehaviour
     [SerializeField]
     private int currentEnemyIndex;
 
+    public int CurrentEnemyIndex => currentEnemyIndex;
     public EnemyAI CurrentEnemy => GetEnemyAt(currentEnemyIndex);
 
     public EnemyAI GetEnemyAt(int enemyIndex)
