@@ -92,7 +92,7 @@ public class EnemyAI : MonoBehaviour
     {
         List<int> validChoices = new List<int>();
 
-        for (int index = 0; index < availableChoices.Count; index++)
+        for (int index = 0; availableChoices != null && index < availableChoices.Count; index++)
         {
             int choice = availableChoices[index];
 
