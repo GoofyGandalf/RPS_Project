@@ -2977,7 +2977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a4d352e0efdc74e93f9d1aef061984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  enemyData: {fileID: 11400000, guid: 6fea98775b1511e4ea08789c5651be6d, type: 2}
+  enemyData: {fileID: 11400000, guid: 5ba461975eb064446b979a4af399709a, type: 2}
 --- !u!4 &1128853859
 Transform:
   m_ObjectHideFlags: 0
@@ -5107,7 +5107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9a4d352e0efdc74e93f9d1aef061984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  enemyData: {fileID: 11400000, guid: 1a3a480db904e9d40b22d4abecc497f2, type: 2}
+  enemyData: {fileID: 0}
 --- !u!4 &1782703256
 Transform:
   m_ObjectHideFlags: 0

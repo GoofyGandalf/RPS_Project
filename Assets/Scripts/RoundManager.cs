@@ -144,6 +144,7 @@ public class RoundManager : MonoBehaviour
             specialCountdownIndex);
 
         HandleEnemyDefeat();
+        HandlePlayerDefeat();
 
         isPlayingResults = false;
 
@@ -169,6 +170,14 @@ public class RoundManager : MonoBehaviour
             return;
 
         enemyProgressionManager.ChallengeNextEnemy();
+        Players.SetEnemyHealth(100f);
+        Players.SetHealth(100f);
+    }
+    private void HandlePlayerDefeat()
+    {
+        if (Players.Health > 0f)
+            return;
+
         Players.SetEnemyHealth(100f);
         Players.SetHealth(100f);
     }
