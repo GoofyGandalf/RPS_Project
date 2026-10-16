@@ -27,6 +27,7 @@ public class RoundManager : MonoBehaviour
     private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
 
     private bool isPlayingResults;
+    public bool IsRoundExecutionActive => isPlayingResults;
 
     private void Awake()
     {
