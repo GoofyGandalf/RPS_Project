@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 public class EnemyProgressionManager : MonoBehaviour
 {
+    private const string CurrentEnemyIndexKey = "RPS_Project.CurrentEnemyIndex";
+
     [SerializeField]
     private List<EnemyAI> enemiesInOrder = new List<EnemyAI>();
 
@@ -11,6 +14,13 @@ public class EnemyProgressionManager : MonoBehaviour
 
     public int CurrentEnemyIndex => currentEnemyIndex;
     public EnemyAI CurrentEnemy => GetEnemyAt(currentEnemyIndex);
+
+    private void Awake()
+    {
+        int savedEnemyIndex = PlayerPrefs.GetInt(CurrentEnemyIndexKey, currentEnemyIndex);
+        currentEnemyIndex = enemiesInOrder.Count == 0 ? 0 : Mathf.Clamp(savedEnemyIndex, 0, enemiesInOrder.Count - 1);
+        SaveProgress();
+    }
 
     public EnemyAI GetEnemyAt(int enemyIndex)
     {
@@ -26,6 +36,19 @@ public class EnemyProgressionManager : MonoBehaviour
             return false;
 
         currentEnemyIndex++;
+        SaveProgress();
         return true;
+    }
+
+    public static void ResetSavedProgress()
+    {
+        PlayerPrefs.DeleteKey(CurrentEnemyIndexKey);
+        PlayerPrefs.Save();
+    }
+
+    private void SaveProgress()
+    {
+        PlayerPrefs.SetInt(CurrentEnemyIndexKey, currentEnemyIndex);
+        PlayerPrefs.Save();
     }
 }

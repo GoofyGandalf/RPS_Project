@@ -28,6 +28,7 @@ public class RoundManager : MonoBehaviour
 
     private bool isPlayingResults;
     public bool IsRoundExecutionActive => isPlayingResults;
+    public event System.Action PlayerDefeated;
 
     private void Awake()
     {
@@ -179,8 +180,7 @@ public class RoundManager : MonoBehaviour
         if (Players.Health > 0f)
             return;
 
-        Players.SetEnemyHealth(100f);
-        Players.SetHealth(100f);
+        PlayerDefeated?.Invoke();
     }
 
 }

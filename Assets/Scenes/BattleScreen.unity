@@ -2584,7 +2584,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   pauseOverlay: {fileID: 112445579}
-  resumeButton: {fileID: 751519417}
+  pauseOverlayText: {fileID: 1312909773}
+  resumeButtonText: {fileID: 595338079}
 --- !u!1 &829187400
 GameObject:
   m_ObjectHideFlags: 0
@@ -4535,6 +4536,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312909771}
   m_CullTransparentMesh: 1
+--- !u!1 &1313327496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1313327498}
+  - component: {fileID: 1313327497}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1313327497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313327496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9a4d352e0efdc74e93f9d1aef061984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  enemyData: {fileID: 11400000, guid: 79519f27a902a2b489bbbdb0d3f04768, type: 2}
+--- !u!4 &1313327498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313327496}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.26867, y: -0.45881, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1375231237
 GameObject:
   m_ObjectHideFlags: 0
@@ -5407,7 +5453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyChallengeManager
   enemiesInOrder:
   - {fileID: 1128853858}
-  - {fileID: 1782703255}
+  - {fileID: 1313327497}
   - {fileID: 774824478}
   - {fileID: 1221452184}
   - {fileID: 320350798}
@@ -6890,3 +6936,4 @@ SceneRoots:
   - {fileID: 774824479}
   - {fileID: 1221452185}
   - {fileID: 1782703256}
+  - {fileID: 1313327498}

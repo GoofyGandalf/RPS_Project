@@ -5,6 +5,12 @@ public class MenuController : MonoBehaviour
 {
     public void StartBattle()
     {
+        EnemyProgressionManager.ResetSavedProgress();
+        SceneManager.LoadScene("BattleScreen");
+    }
+
+    public void ContinueBattle()
+    {
         SceneManager.LoadScene("BattleScreen");
     }
 
