@@ -14,6 +14,7 @@ public class EnemyProgressionManager : MonoBehaviour
 
     public int CurrentEnemyIndex => currentEnemyIndex;
     public EnemyAI CurrentEnemy => GetEnemyAt(currentEnemyIndex);
+    public static bool HasSavedProgress => PlayerPrefs.GetInt(CurrentEnemyIndexKey, 0) > 0;
 
     private void Awake()
     {
