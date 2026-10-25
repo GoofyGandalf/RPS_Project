@@ -7,6 +7,8 @@ public class RoundManager : MonoBehaviour
     // Shared timing values for the queued result playback.
     private const float TimeBetweenCountdowns = 1.71f;
     private const float TimeAfterChoiceDisplayClears = 0.855f;
+    private const float PlayerDefeatTransitionDelay = 1f;
+    private const float EnemyDefeatTransitionDelay = 1f;
 
     [SerializeField]
     private PlayerHandler Players;
@@ -23,10 +25,14 @@ public class RoundManager : MonoBehaviour
     [SerializeField]
     private EnemyProgressionManager enemyProgressionManager;
 
+    [SerializeField]
+    private VictoryScreen victoryScreen;
+
     private RoundInputBuffer roundInputBuffer;
     private readonly SpecialTimingTracker specialTimingTracker = new SpecialTimingTracker();
 
     private bool isPlayingResults;
+    private bool hasWonRun;
     public bool IsRoundExecutionActive => isPlayingResults;
     public event System.Action PlayerDefeated;
 
@@ -42,7 +48,7 @@ public class RoundManager : MonoBehaviour
     // Validates a player choice and queues it into the current batch.
     public void OnPlayerChoice(int selectedPlayerChoice)
     {
-        if (isPlayingResults || selectedPlayerChoice < 1 || selectedPlayerChoice > 6)
+        if (isPlayingResults || hasWonRun || selectedPlayerChoice < 1 || selectedPlayerChoice > 6)
             return;
 
         if (selectedPlayerChoice >= 4)
@@ -53,7 +59,7 @@ public class RoundManager : MonoBehaviour
 
     private void ProcessButtonClick(int selectedPlayerChoice)
     {
-        if (isPlayingResults)
+        if (isPlayingResults || hasWonRun)
             return;
 
         roundInputBuffer.SetEnemyAI(enemyProgressionManager.CurrentEnemy);
@@ -145,8 +151,8 @@ public class RoundManager : MonoBehaviour
             batch.EnemyChoices,
             specialCountdownIndex);
 
-        HandleEnemyDefeat();
-        HandlePlayerDefeat();
+        yield return StartCoroutine(HandleEnemyDefeat());
+        yield return StartCoroutine(HandlePlayerDefeat());
 
         isPlayingResults = false;
 
@@ -154,8 +160,8 @@ public class RoundManager : MonoBehaviour
         choiceDisplayUI.Clear();
 
         buttonHandler.SetSpecialButtonInteractable(false);
-        buttonHandler.SetRegularButtonsInteractable(true);
-        SetHighChoiceButtonsInteractable(true);
+        buttonHandler.SetRegularButtonsInteractable(!hasWonRun);
+        SetHighChoiceButtonsInteractable(!hasWonRun);
 
     }
 
@@ -166,20 +172,34 @@ public class RoundManager : MonoBehaviour
             enemyProgressionManager.CurrentEnemyIndex);
     }
 
-    private void HandleEnemyDefeat()
+    private IEnumerator HandleEnemyDefeat()
     {
         if (Players.Enemy_Health > 0f)
-            return;
+            yield break;
 
-        enemyProgressionManager.ChallengeNextEnemy();
+        yield return new WaitForSecondsRealtime(EnemyDefeatTransitionDelay);
+        yield return StartCoroutine(victoryScreen.ShowVictory());
+
+        if (!enemyProgressionManager.ChallengeNextEnemy())
+        {
+            hasWonRun = true;
+            victoryScreen.ShowFinalVictory();
+            yield break;
+        }
+
+        yield return StartCoroutine(
+            victoryScreen.ShowNextChallenger(enemyProgressionManager.CurrentEnemy.Data.EnemyName));
+
         Players.SetEnemyHealth(100f);
         Players.SetHealth(100f);
     }
-    private void HandlePlayerDefeat()
-    {
-        if (Players.Health > 0f)
-            return;
 
+    private IEnumerator HandlePlayerDefeat()
+    {
+        if (Players.Health > 0f || hasWonRun)
+            yield break;
+
+        yield return new WaitForSecondsRealtime(PlayerDefeatTransitionDelay);
         PlayerDefeated?.Invoke();
     }
 
