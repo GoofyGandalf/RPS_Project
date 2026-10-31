@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a078ca83b51433488bead2a02e1e736, type: 3}
   m_Name: RockboyTestData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Enemy
+  enemyName: Rockboy
   moveOneChoices: 01000000i
   moveTwoChoices: 01000000i
   moveThreeChoices: 01000000i

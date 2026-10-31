@@ -188,7 +188,7 @@ public class RoundManager : MonoBehaviour
         }
 
         yield return StartCoroutine(
-            victoryScreen.ShowNextChallenger(enemyProgressionManager.CurrentEnemy.Data.EnemyName));
+            victoryScreen.ShowNextChallenger(enemyProgressionManager.CurrentEnemy.Data));
 
         Players.SetEnemyHealth(100f);
         Players.SetHealth(100f);

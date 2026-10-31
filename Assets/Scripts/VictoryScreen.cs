@@ -38,9 +38,9 @@ public class VictoryScreen : MonoBehaviour
         victoryPanel.SetActive(false);
     }
 
-    public IEnumerator ShowNextChallenger(string challengerName)
+    public IEnumerator ShowNextChallenger(EnemyData challengerData)
     {
-        nextChallengerText.text = $"Next Challenger\n{challengerName}";
+        nextChallengerText.text = $"Next Challenger\n{challengerData.EnemyName}";
         nextChallengerPanel.SetActive(true);
         yield return new WaitForSecondsRealtime(nextChallengerDisplayDuration);
         nextChallengerPanel.SetActive(false);
